@@ -66,12 +66,22 @@ module Klaviyo
       request('api/identify', params)
     end
 
-    def subscribe_to_list(kwargs = {})
+    def add_to_list(kwargs = {})
       if kwargs[:list_id].to_s.empty? || kwargs[:profiles].empty?
         raise KlaviyoError.new('You must provide a list id and profile(s)')
       end
 
       process_request_v2(action: 'post', url: "list/#{kwargs[:list_id]}/members", params: {
+        profiles: kwargs[:profiles]
+      })
+    end
+
+    def subscribe_to_list(kwargs = {})
+      if kwargs[:list_id].to_s.empty? || kwargs[:profiles].empty?
+        raise KlaviyoError.new('You must provide a list id and profile(s)')
+      end
+
+      process_request_v2(action: 'post', url: "list/#{kwargs[:list_id]}/subscribe", params: {
         profiles: kwargs[:profiles]
       })
     end
