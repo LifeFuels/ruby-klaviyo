@@ -120,7 +120,7 @@ module Klaviyo
           response = self.class.get("/api/v2/#{url}", headers: headers, query: params)
         end
 
-        process_response(response)
+        process_response(response: response, action: action)
       rescue => exception
         # we hit a rate limit error so sleep and retry
         if throttled
@@ -132,9 +132,9 @@ module Klaviyo
       end
     end
 
-    def process_response(response)
+    def process_response(response:, action:)
       if response.code == 200
-        return JSON.parse(response.body)
+        return action == 'post' ? true : JSON.parse(response.body)
       else
         # figure out how long we were throttled and sleep a little past the time given
         if response.code == 429 && response['detail'] =~ /throttled/
